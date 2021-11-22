@@ -1,7 +1,3 @@
-<h1 align="center">
-    <img style="width: 100px;height: 100px;" src="./assets/logo.png" /> 
-    
-</h1>
 <h1 align="center"> Algoritmo de Quine-McCluskey </h1>
 
 <h4 align="center"> 
