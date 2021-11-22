@@ -16,10 +16,12 @@
 
 **VANTAGEM**
  
->>É funcionalmente idêntico ao mapa de Karnaugh, mas a forma tabular o faz mais eficiente para uso em algoritmos computacionais.
+>É funcionalmente idêntico ao mapa de Karnaugh, mas a forma tabular o faz mais eficiente para uso em algoritmos computacionais.
 Além de fornecer um algoritmo determinístico para checar se a forma mais simplificada de uma função booleana foi alcançada.
+>
 
 **DESVANTAGEM**
 
->>Embora mais prático do que o mapa de Karnaugh ao lidar com mais de 4 variáveis, o algoritmo de Quine-McCluskey também possui limitações devido ao fato de o problema resolvido por ele ser NP-difícil: o tempo de execução do algoritmo de Quine-McCluskey cresce exponencialmente em relação ao número de variáveis.
+>Embora mais prático do que o mapa de Karnaugh ao lidar com mais de 4 variáveis, o algoritmo de Quine-McCluskey também possui limitações devido ao fato de o problema resolvido por ele ser NP-difícil: o tempo de execução do algoritmo de Quine-McCluskey cresce exponencialmente em relação ao número de variáveis.
+>
 
