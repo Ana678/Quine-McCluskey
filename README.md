@@ -23,7 +23,7 @@
 
 ## 🤝 Participantes do Projeto
 
--  Ana Carolina de Araújo, aluna de Sistemas da Informação 
--  Luiz Paulo de Assis Barbosa, professor da UFRN-CAICÓ
+-  Ana Carolina de Araújo, aluna de Sistemas da Informação;
+-  Luiz Paulo de Assis Barbosa, professor da UFRN-CAICÓ.
 
 
