@@ -1,27 +1,33 @@
-# Quine-McCluskey
+<h1 align="center">
+    <img style="width: 100px;height: 100px;" src="./assets/logo.png" /> 
+    
+</h1>
+<h1 align="center"> Algoritmo de Quine-McCluskey </h1>
 
->### Algoritmo usado para simplificar expressões funções booleanas
+<h4 align="center"> 
+    🚧      Projeto em Construção...      🚧
+</h4>
 
->Este projeto está sendo desenvolvido na UFRN, Campus Caicó, por Ana Carolina de Araújo, com a orientação do professor Luiz Paulo de Assis Barbosa.
+## ✍️ O que é esse Algoritmo?
 
->Este projeto utiliza a linguagem de programação **JavaScript**,assim como **HTML** para estrutura,**CSS** e **Bootstrap** para estilização.
+- O Algoritmo de Quine–McCluskey consiste em um método utilizado para simplificação de funções booleanas; 
+- Foi desenvolvido por W.V. Quine e Edward J. McCluskey em 1956.
 
+## ✨ Vantagens do Algoritmo
 
+- É funcionalmente idêntico ao mapa de Karnaugh;
+- A forma tabular o faz mais eficiente para uso em algoritmos computacionais;
+- Fornece um algoritmo determinístico para checar se a forma mais simplificada de uma função booleana foi alcançada.
 
-**Resumo Geral Sobre o Projeto**
+## ⚙️ Tecnologias Utilizadas
 
+- A programação está sendo feita em **JavaScript**;
+- A estruturação usa **HTML**;
+- A estilização usa **CSS** e **Bootstrap**;
 
->O Algoritmo de Quine–McCluskey consiste em um método utilizado para simplificação de funções booleanas desenvolvido por W.V. Quine e Edward J. McCluskey em 1956.
+## 🤝 Participantes do Projeto
 
-
-**VANTAGEM**
- 
->É funcionalmente idêntico ao mapa de Karnaugh, mas a forma tabular o faz mais eficiente para uso em algoritmos computacionais.
-Além de fornecer um algoritmo determinístico para checar se a forma mais simplificada de uma função booleana foi alcançada.
-
-
-**DESVANTAGEM**
-
->Embora mais prático do que o mapa de Karnaugh ao lidar com mais de 4 variáveis, o algoritmo de Quine-McCluskey também possui limitações devido ao fato de o problema resolvido por ele ser NP-difícil: o tempo de execução do algoritmo de Quine-McCluskey cresce exponencialmente em relação ao número de variáveis.
+-  Ana Carolina de Araújo, aluna de Sistemas da Informação 
+-  Luiz Paulo de Assis Barbosa, professor da UFRN-CAICÓ
 
 
