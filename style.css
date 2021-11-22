@@ -1,0 +1,45 @@
+#icon_table{
+
+    position: relative;
+    display: inline-block;
+}
+
+#mensagem_icon{
+    visibility: hidden;
+    width: 200px;
+    background-color: rgb(0, 0, 0, 0.2);
+    box-shadow: 0 0 0.3em gray;
+    color: black;
+    text-align: center;
+    padding: 5px;
+    border-radius: 10px;
+    position: absolute;
+    margin-left: 10px;
+    margin-top: -5px;
+    z-index: 1;
+}  
+
+#icon_table:hover #mensagem_icon {
+    visibility: visible;
+}
+
+#expressao{
+    display:none;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#expressao_final{
+    display:none;
+    background-color: black;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

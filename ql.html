@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <script type="text/javascript" src="functions.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <title>Algoritmo de Quine-McCluskey</title>
+
+</head>
+<body>
+
+    <p class="display-3 text-center mb-3 p-3">Algoritmo de Quine-McCluskey</p>
+   
+    <div class="container mt-3 ">
+        <form>
+            <div class="form-group">
+              <p id="error" style="background-color: brown;text-align: center;color: white;"> </p>
+            </div>
+            <div class="form-group">
+              <label for="formGroupExampleInput mt-3">Variáveis de Entrada</label>
+              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e ele será salvo automaticamente"></i>
+              <input type="number" id="variaveis" onkeyup="define_variaveis()" class="form-control" id="formGroupExampleInput" placeholder="Digite o número de variáveis">
+            </div>
+            <div class="form-group">
+              <label for="formGroupExampleInput mt-3">Insira um minitermo da Função</label>
+              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
+              <input type="number" id="minitermo" onkeyup="add_minitermo()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
+            </div>
+            <div class="form-group">
+              <div id="saida" for="formGroupExampleInput2"></div>
+            </div>
+            <div class="form-group">
+              <label for="formGroupExampleInput mt-3">Don't Cares da Função</label>
+              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
+              <input type="number" id="dontcare" onkeyup="add_dont_care()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
+            </div>
+            <div class="form-group">
+              <label id="saida_dont" for="formGroupExampleInput2"></label>
+            </div>
+            <!--<div class="form-group">
+              <button class="btn" for="formGroupExampleInput2" type="button" onclick="simplificacao()">chamar tabela</button>
+            </div> -->
+            <div class="form-group">
+              <p class="display-5 text-center background-color-black" title="minitermos e don't cares da função" id="expressao" for="formGroupExampleInput2"></p>
+            </div>
+            <div class="form-group">
+              <label id="tabela" for="formGroupExampleInput2"></label>
+            </div>
+            <div class="form-group">
+              <p class="display-5 text-center background-color-black" id="expressao_final" for="formGroupExampleInput2"></p>
+            </div>
+        </form> 
+    </div>
+    
+</body>
+</html>
