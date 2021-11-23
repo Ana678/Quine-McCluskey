@@ -264,7 +264,6 @@ function prime_implicants(){
       } 
       if (repeticao > 1){
         termos_unicos.splice(i,1);
-        i--;
       }
       i--;  
     }
