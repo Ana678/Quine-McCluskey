@@ -50,12 +50,14 @@ function add_minitermo(){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
     
+    document.getElementById('tabela').style.display = 'none';
+    document.getElementById('expressao').style.display = 'none';
+    document.getElementById('expressao_final').style.display = 'none';
+    simplificacao();
+  
   }
   
-  document.getElementById('tabela').style.display = 'none';
-  document.getElementById('expressao').style.display = 'none';
-  document.getElementById('expressao_final').style.display = 'none';
-  simplificacao();
+
   
 }
 
@@ -111,13 +113,14 @@ function add_dont_care(){
     }else if (dont >= 2**n){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
-    
+
+    document.getElementById('tabela').style.display = 'none';
+    document.getElementById('expressao').style.display = 'none';
+    document.getElementById('expressao_final').style.display = 'none';
+    simplificacao();  
   }
   
-  document.getElementById('tabela').style.display = 'none';
-  document.getElementById('expressao').style.display = 'none';
-  document.getElementById('expressao_final').style.display = 'none';
-  simplificacao();
+
   
 }
 
@@ -136,6 +139,7 @@ function excluir_dont_care(id){
     document.getElementById(dont).remove();
 
     //CSS
+    
     document.getElementById('tabela').style.display = 'none';
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
@@ -150,7 +154,7 @@ function excluir_dont_care(id){
 // TRANSFORMACAO BINARIO EM LITERAL STRING
 
 function bin_literal(numero,n){
-  // variaveis
+  
   letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
   lista_numero = (numero).split('');
   num_convertido = [];
@@ -339,7 +343,7 @@ function construir_tabela(){
               v = bin_literal(grupo_atual[j],n);
               myTable += '<tr>';
               myTable += '<td><b>' + grupo_atual[j-1] + '</b>&emsp;&emsp;&emsp;&emsp;' + grupo_atual[j] + '&emsp;&emsp;&emsp;&emsp;' + v;
-              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a href="#"> <i id="icon_table" class="bi bi-pencil-square">';
+              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a> <i id="icon_table" class="bi bi-pencil-square">';
               myTable += '<span id="mensagem_icon">'+ gerar_calculo_algebra(grupo_atual[j-1]) +' </span></i></a>';
               myTable += '</td>';
               myTable += '</tr>';
