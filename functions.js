@@ -49,12 +49,14 @@ function add_minitermo(){
     }else if (min >= 2**n){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
+    
   }
   
   document.getElementById('tabela').style.display = 'none';
   document.getElementById('expressao').style.display = 'none';
   document.getElementById('expressao_final').style.display = 'none';
   simplificacao();
+  
 }
 
 ////////////////////////////////////////////////////
@@ -74,9 +76,9 @@ function excluir_minitermo(id){
     //CSS
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
-    simplificacao();
-
+   
   }
+  simplificacao();
 }
 
 ///////////////////////////////////////////////////
@@ -109,12 +111,14 @@ function add_dont_care(){
     }else if (dont >= 2**n){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
+    
   }
   
   document.getElementById('tabela').style.display = 'none';
   document.getElementById('expressao').style.display = 'none';
   document.getElementById('expressao_final').style.display = 'none';
   simplificacao();
+  
 }
 
 ////////////////////////////////////////////////////
@@ -132,7 +136,6 @@ function excluir_dont_care(id){
     document.getElementById(dont).remove();
 
     //CSS
-    
     document.getElementById('tabela').style.display = 'none';
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
@@ -148,7 +151,7 @@ function excluir_dont_care(id){
 
 function bin_literal(numero,n){
   
-  letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+  letras = ['W','X','Y','Z','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
   lista_numero = (numero).split('');
   num_convertido = [];
 
@@ -247,18 +250,26 @@ function prime_implicants(){
     expressao_algebrica += ') = ';
    
     inseridos = [];
-    
+    // criar um array q vai receber os termos unicos e vai verificar se tem nos prime implicants
     termos_unicos = [];
     termos_unicos = termos_unicos.concat(minitermos);
     var i = termos_unicos.length -1;
+
     while (i >= 0){
       termo = termos_unicos[i].toString();
       repeticao = 0;
 
       for (j = 0; j < array_prime_implicants.length; j++){
         if (j%2 == 0){
+
           if(array_prime_implicants[j].includes(termo) == true){
-            repeticao += 1;
+            array_pi = array_prime_implicants[j].split(',');
+
+            for(k=0 ;k <array_pi.length; k++){
+              if (array_pi[k] == termo){
+                repeticao += 1;
+              }
+            } 
           }
         }
       } 
@@ -272,7 +283,9 @@ function prime_implicants(){
       for (var i = 0; i < termos_unicos.length; i++){
         for (r = 0; r < array_prime_implicants.length; r++){
           if (r%2 == 0){
-            if ((inseridos.includes(array_prime_implicants[r]) == false) && (array_prime_implicants[r].includes(termos_unicos[i].toString()) == true)){
+
+            elemento = (array_prime_implicants[r]).split(',');
+            if ((inseridos.includes(array_prime_implicants[r]) == false) && (elemento.indexOf(termos_unicos[i].toString()) >= 0)){
               grupo = array_prime_implicants[r+1];
               indice = combinacoes[grupo].indexOf(array_prime_implicants[r]) + 1;
               v = bin_literal((combinacoes[grupo][indice]),n);
@@ -326,8 +339,8 @@ function construir_tabela(){
               v = bin_literal(grupo_atual[j],n);
               myTable += '<tr>';
               myTable += '<td><b>' + grupo_atual[j-1] + '</b>&emsp;&emsp;&emsp;&emsp;' + grupo_atual[j] + '&emsp;&emsp;&emsp;&emsp;' + v;
-              myTable +=  '&emsp;&emsp;&emsp;&emsp; <i id="icon_table" class="bi bi-pencil-square">';
-              myTable += '<span id="mensagem_icon">'+ gerar_calculo_algebra(grupo_atual[j-1]) +' </span></i>';
+              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a href="#"> <i id="icon_table" class="bi bi-pencil-square">';
+              myTable += '<span id="mensagem_icon">'+ gerar_calculo_algebra(grupo_atual[j-1]) +' </span></i></a>';
               myTable += '</td>';
               myTable += '</tr>';
 
@@ -412,8 +425,8 @@ function add_to_combinacoes(){
   for (i=0; i < juncao.length; i++){
 
     num_bin = Number(juncao[i]).toString(2).padStart(n, 0);
-    contagem = (num_bin.split('1').length) -1;
-    combinacoes[contagem].push(juncao[i].toString(),num_bin);
+    grupo = (num_bin.split('1').length) -1;
+    combinacoes[grupo].push(juncao[i].toString(),num_bin);
 
   }
 
@@ -490,13 +503,13 @@ function simplificacao(){
             
             k = ((grupo_atual).length) -2;
     
-            while (k >= 0){
+            while (k >= 0){ //entra matriz grupo 0 elemento 0
               
               linha_atual = (grupo_atual[k]).split(',');
     
               l = ((grupo_posterior).length) -2;
 
-              while (l >= 0){
+              while (l >= 0){ //entra matriz grupo 0 elemento 0
 
                 linha_posterior = (grupo_posterior[l]).split(',');
                 
