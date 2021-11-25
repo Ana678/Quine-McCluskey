@@ -151,7 +151,7 @@ function excluir_dont_care(id){
 
 function bin_literal(numero,n){
   
-  letras = ['W','X','Y','Z','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+  letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
   lista_numero = (numero).split('');
   num_convertido = [];
 
