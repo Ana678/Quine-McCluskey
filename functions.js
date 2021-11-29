@@ -120,8 +120,6 @@ function add_dont_care(){
     simplificacao();  
   }
   
-
-  
 }
 
 ////////////////////////////////////////////////////
@@ -222,18 +220,84 @@ function num_ordenados(sequencia){
 }
 
 ///////////////////////////////////////////
+
+// CONFERIR SE DOIS ARRAYS SÃO IGUAIS  
+
+function arrays_iguais(a,b){
+  iguais = false;
+  qtd_iguais = 0;
+  for(i=0; i<a.length;i++){
+    for(j=0;j<b.length;j++){
+      if(a[i] == b[j]){
+        qtd_iguais += 1;
+      }
+    }
+  }
+  if ((qtd_iguais == a.length) || (qtd_iguais == b.length)){
+    iguais = true;
+  }
+  return iguais;
+}
+
+///////////////////////////////////////////
+
 /////       GERAR CALCULO ALGEBRA     ////
 
 function gerar_calculo_algebra(caminho){
 
-  array_caminho = caminho.split(',');
   var algebra = '';
-  
-  for (i = 0; i < array_caminho.length; i++){
-    num_bin = Number(array_caminho[i]).toString(2).padStart(n, 0);
+  grupos = caminho.length/2;
+  array_merge = [];
+  /*while (grupos > 0){
+    if (array_merge.length === 0){*/
+      for (i = 0; i < caminho.length; i++){
+        num_bin = Number(caminho[i]).toString(2).padStart(n, 0);
 
-    algebra += ' ' + bin_literal(num_bin,n) + ' +';
+        algebra += ' ' + bin_literal(num_bin,n) + ' +';
+
+        if (i%2 != 0){
+          algebra = algebra.slice(0, -1);
+          merge = [];
+          num_bin_1 = Number(caminho[i-1]).toString(2).padStart(n, 0);
+
+          for(l = 0; l < n; l++){
+            if (num_bin_1[l] == num_bin[l]){
+              merge.push(num_bin[l]);
+            }else{
+              merge.push('-');
+            }
+          }
+          array_merge.push(merge);
+          algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
+        }
+      }
+
+    /*}else{
+      if(array_merge.length%2 == 0){
+        for (i = 0; i < array_merge.length; i++){
+
+          algebra += ' ' + bin_literal(array_merge[i],n) + ' +';
+
+          if (i%2 != 0){
+            algebra = algebra.slice(0, -1);
+            merge = []; 
+
+            for(l = 0; l < n; l++){
+              if (array_merge[i][l] == array_merge[i-1][l]){
+                merge.push(array_merge[i]);
+              }else{
+                merge.push('-');
+              }
+            }
+            array_merge.push(merge);
+            algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
+          }
+        }
+      }
+    }
+    grupos-=1;
   }
+  document.getElementById('algebra_modal').innerHTML = algebra;*/
   return algebra;
 }
 
@@ -241,7 +305,7 @@ function gerar_calculo_algebra(caminho){
 /////      SELECIONAR PRIME IMPLICANTS    ////
 
 function prime_implicants(){
-
+  //alert('to entrando nos prime gata');
   if((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     expressao_html = document.getElementById("expressao_final");
@@ -254,27 +318,24 @@ function prime_implicants(){
     expressao_algebrica += ') = ';
    
     inseridos = [];
-    // criar um array q vai receber os termos unicos e vai verificar se tem nos prime implicants
+
     termos_unicos = [];
     termos_unicos = termos_unicos.concat(minitermos);
     var i = termos_unicos.length -1;
 
     while (i >= 0){
-      termo = termos_unicos[i].toString();
+      termo = termos_unicos[i];
       repeticao = 0;
 
       for (j = 0; j < array_prime_implicants.length; j++){
         if (j%2 == 0){
+          array_pi = array_prime_implicants[j];
 
-          if(array_prime_implicants[j].includes(termo) == true){
-            array_pi = array_prime_implicants[j].split(',');
-
-            for(k=0 ;k <array_pi.length; k++){
-              if (array_pi[k] == termo){
-                repeticao += 1;
-              }
-            } 
-          }
+          for(k=0 ;k <array_pi.length; k++){
+            if (array_pi[k] == termo){
+              repeticao += 1;
+            }
+          } 
         }
       } 
       if (repeticao > 1){
@@ -288,7 +349,7 @@ function prime_implicants(){
         for (r = 0; r < array_prime_implicants.length; r++){
           if (r%2 == 0){
 
-            elemento = (array_prime_implicants[r]).split(',');
+            elemento = array_prime_implicants[r]; 
             if ((inseridos.includes(array_prime_implicants[r]) == false) && (elemento.indexOf(termos_unicos[i].toString()) >= 0)){
               grupo = array_prime_implicants[r+1];
               indice = combinacoes[grupo].indexOf(array_prime_implicants[r]) + 1;
@@ -316,7 +377,7 @@ function construir_tabela(){
 
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     tabela = document.getElementById("tabela");
-    tabela.innerHTML = '';
+    //tabela.innerHTML = '';
     var myTable = '';
     myTable += '<table class="table"> <thead> <tr> <th scope="col"> Tabela organizada pela quantidade de 1s </th> </tr>';
     myTable +='<tr>';
@@ -334,16 +395,18 @@ function construir_tabela(){
 
         for (var j = 1; j < (grupo_atual).length; j++){
 
-          if (j%2 != 0){ 
-              if (array_prime_implicants.includes(grupo_atual[j-1]) == false){
+          if (j%2 != 0){
+              //alert('array_prime_implicants.indexOf(grupo_atual[j-1])__________'+array_prime_implicants.indexOf(grupo_atual[j-1]));
+              if (array_prime_implicants.indexOf(grupo_atual[j-1]) < 0){
                 array_prime_implicants.push(grupo_atual[j-1],i);
         
               }
-
+              caminho = grupo_atual[j-1].join(",");
+              //alert(caminho);
               v = bin_literal(grupo_atual[j],n);
               myTable += '<tr>';
-              myTable += '<td><b>' + grupo_atual[j-1] + '</b>&emsp;&emsp;&emsp;&emsp;' + grupo_atual[j] + '&emsp;&emsp;&emsp;&emsp;' + v;
-              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a> <i id="icon_table" class="bi bi-pencil-square">';
+              myTable += '<td><b>' + caminho + '</b>&emsp;&emsp;&emsp;&emsp;' + grupo_atual[j] + '&emsp;&emsp;&emsp;&emsp;' + v;
+              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a href="#"> <i id="icon_table" class="bi bi-pencil-square" data-toggle="modal" data-target="#ExemploModalCentralizado">';
               myTable += '<span id="mensagem_icon">'+ gerar_calculo_algebra(grupo_atual[j-1]) +' </span></i></a>';
               myTable += '</td>';
               myTable += '</tr>';
@@ -354,7 +417,7 @@ function construir_tabela(){
       }
     }
 
-    myTable += '</tbody> </table> <br>';
+    myTable += '</tbody> </table> <br><br><br><br><br>';
     tabela.innerHTML += myTable;
     
     document.getElementById('tabela').style.display = 'block';
@@ -430,7 +493,9 @@ function add_to_combinacoes(){
 
     num_bin = Number(juncao[i]).toString(2).padStart(n, 0);
     grupo = (num_bin.split('1').length) -1;
-    combinacoes[grupo].push(juncao[i].toString(),num_bin);
+    caminho = [];
+    caminho.push(juncao[i]);
+    combinacoes[grupo].push(caminho,num_bin);
 
   }
 
@@ -443,6 +508,7 @@ function simplificacao(){
   possibilidade_merge = true;
   add_to_combinacoes();
   criar_expressao();
+  construir_tabela();
   while (possibilidade_merge == true){
 
     mudanca_array = 0;
@@ -476,17 +542,35 @@ function simplificacao(){
                 
                 if ((qtd_diferentes == 1) && (merge.length == n)){
                   merge = (merge).join('');
-
                   grupo = (merge.split('1').length) -1;
-                  caminho = grupo_atual[(j)-1] + "," + grupo_posterior[(k)-1];
-                  caminho = num_ordenados(caminho);
 
-                  verifica_merge = (combinacoes[grupo]).includes(caminho);
+                  verifica_arrays_iguais = arrays_iguais(grupo_atual[(j)-1],grupo_posterior[(k)-1]);
+                  if (verifica_arrays_iguais == false){
 
-                  if ((verifica_merge == false) && (str_unica(caminho) == false)){
+                    caminho = (grupo_atual[(j)-1]).concat(grupo_posterior[(k)-1]);
+                    existe_merge = false;
+
+                    for (l = 0; l < combinacoes[grupo].length; l++){
+                      if (l%2 == 0){
+                        elemento = combinacoes[grupo][l];
+                        qtd_caminho_igual = 0;
+                        for (p = 0; p < elemento.length; p++){
+                          for (q = 0; q < caminho.length; q++){
+                            if (elemento[p] == caminho[q]){
+                              qtd_caminho_igual += 1;
+                            }
+                          }
+                        }
+                        if (qtd_caminho_igual == caminho.length){
+                          existe_merge = true;
+                        }
+                      }
+                    }
                     
-                    combinacoes[grupo].push(caminho,merge);
-                    mudanca_array += 1;
+                    if (existe_merge == false && ((caminho.length)%2) == 0){
+                      combinacoes[grupo].push(caminho,merge);
+                      mudanca_array += 1;
+                    }
                   }
                 }
               }
@@ -496,7 +580,6 @@ function simplificacao(){
       }
     }
     if (mudanca_array == 0){  
-
       for (var i = 0; i <= n; i++){
     
         for (var j = 0; j <= n; j++){
@@ -507,15 +590,13 @@ function simplificacao(){
             
             k = ((grupo_atual).length) -2;
     
-            while (k >= 0){ //entra matriz grupo 0 elemento 0
-              
-              linha_atual = (grupo_atual[k]).split(',');
-    
+            while (k >= 0){ 
+              linha_atual = grupo_atual[k];
               l = ((grupo_posterior).length) -2;
 
-              while (l >= 0){ //entra matriz grupo 0 elemento 0
+              while (l >= 0){ 
 
-                linha_posterior = (grupo_posterior[l]).split(',');
+                linha_posterior = grupo_posterior[l];
                 
                 igual = 0;
                 for (var t = 0; t < linha_atual.length; t++){
@@ -526,13 +607,13 @@ function simplificacao(){
                     }
                   }
                 }
-                if ((igual == (linha_posterior).length) && ((linha_posterior).length < (linha_atual).length)){
+                if ((igual == linha_posterior.length) && (linha_posterior.length < linha_atual.length)){
                   grupo_posterior.splice(l, 2);
                   if (i == j){
                     k -= 2;
                   }
     
-                }else if ((igual == (linha_atual).length) && ((linha_atual).length < (linha_posterior).length)){
+                }else if ((igual == linha_atual.length) && (linha_atual.length < linha_posterior.length)){
                   grupo_atual.splice(k, 2);
                   if (i == j){
                     k -= 2;
