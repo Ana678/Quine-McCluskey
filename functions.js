@@ -50,7 +50,7 @@ function add_minitermo(){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
     
-    document.getElementById('tabela').style.display = 'none';
+    document.getElementById('tabela').innerHTML = "";  
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();
@@ -114,7 +114,7 @@ function add_dont_care(){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
 
-    document.getElementById('tabela').style.display = 'none';
+    document.getElementById('tabela').innerHTML = "";  
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();  
@@ -138,7 +138,7 @@ function excluir_dont_care(id){
 
     //CSS
     
-    document.getElementById('tabela').style.display = 'none';
+    document.getElementById('tabela').innerHTML = "";  
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();
