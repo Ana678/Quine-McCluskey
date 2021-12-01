@@ -50,7 +50,7 @@ function add_minitermo(){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
     
-    document.getElementById('tabela').innerHTML = "";  
+    document.getElementById('tabela').style.display = 'none';
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();
@@ -114,7 +114,7 @@ function add_dont_care(){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
 
-    document.getElementById('tabela').innerHTML = "";  
+    document.getElementById('tabela').style.display = 'none';
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();  
@@ -138,7 +138,7 @@ function excluir_dont_care(id){
 
     //CSS
     
-    document.getElementById('tabela').innerHTML = "";  
+    document.getElementById('tabela').style.display = 'none';
     document.getElementById('expressao').style.display = 'none';
     document.getElementById('expressao_final').style.display = 'none';
     simplificacao();
@@ -254,8 +254,10 @@ function gerar_calculo_algebra(caminho){
         num_bin = Number(caminho[i]).toString(2).padStart(n, 0);
 
         algebra += ' ' + bin_literal(num_bin,n) + ' +';
-
-        if (i%2 != 0){
+        if (caminho.length == 1){
+          algebra = algebra.slice(0, -1);  
+        }
+        else if (i%2 != 0){
           algebra = algebra.slice(0, -1);
           merge = [];
           num_bin_1 = Number(caminho[i-1]).toString(2).padStart(n, 0);
@@ -502,15 +504,94 @@ function add_to_combinacoes(){
 }
 
 /////////////////////////////////////////////
+////////   EXCLUIR TERMOS INFERIORES   //////
 
+function excluir_termos_inferiores(m){
+
+  if ((combinacoes[m]).length == 2 && m != 0){    
+    if (combinacoes[m-1].length > 0){
+      // se o grupo atual só conter 2 itens, entao ele sera comparado com o anterior,
+      // verificando se tem a ocorrencia dele e so assim podera ser excluido
+      item_m = combinacoes[m][0];
+      achei = false;
+      
+      for (j=0; j < combinacoes[m-1].length; j++){
+        if (j%2 == 0){
+          igual = 0;
+          for(h = 0; h < item_m.length; h++){
+            if (combinacoes[m-1][j].indexOf(item_m[h]) >= 0){
+              igual += 1;
+            } 
+          }
+          if (igual == item_m.length){
+            achei = true;
+          }
+        }
+      }
+      if (achei == true){
+        combinacoes[m].splice(0, 2);
+      }
+    }
+  }else{ 
+    x = m;
+    y = m;
+
+    if (m != 0){
+      if (combinacoes[m-1].length > 0){
+        x -= 1;
+        y -= 1;
+      }
+    }
+
+    while (x <= m){
+      grupo_atual = combinacoes[x];
+
+      while(y <= m){
+        grupo_posterior = combinacoes[y];
+        
+        k = (grupo_atual.length) -2;
+
+        while (k >= 0){ 
+          linha_atual = grupo_atual[k];
+          l = (grupo_posterior.length) -2;
+
+          while (l >= 0){ 
+
+            linha_posterior = grupo_posterior[l];
+            igual = 0;
+
+            for (var t = 0; t < linha_posterior.length; t++){
+              if (linha_atual.indexOf(linha_posterior[t]) >= 0){
+                igual += 1;
+              }
+            }
+            if (igual == linha_posterior.length && linha_posterior.length < linha_atual.length){
+              grupo_posterior.splice(l, 2);
+              if (x == y){
+                k -= 2;
+              }
+            }
+            l -= 2;
+          }
+          k -= 2;
+        }
+        y++;
+      }  
+      x++;  
+    }
+  }
+}
+
+/////////////////////////////////////////////
 
 function simplificacao(){
+  document.getElementById('tabela').innerHTML = "";  
   possibilidade_merge = true;
   add_to_combinacoes();
   criar_expressao();
-  construir_tabela();
-  while (possibilidade_merge == true){
 
+  while (possibilidade_merge == true){
+    construir_tabela();
     mudanca_array = 0;
     for (var i = 0; i < n; i++){
 
@@ -576,60 +657,19 @@ function simplificacao(){
               }
             }
           } 
-        }    
-      }
+        }
+      } 
+      if (combinacoes[i].length > 0){
+        excluir_termos_inferiores(i);
+        if(i+1 == n){
+          excluir_termos_inferiores(i+1);
+        }
+      }       
     }
     if (mudanca_array == 0){  
-      for (var i = 0; i <= n; i++){
-    
-        for (var j = 0; j <= n; j++){
-          if (((combinacoes[i]).length != 0) && ((combinacoes[j]).length != 0)){
-    
-            grupo_atual = combinacoes[i];
-            grupo_posterior = combinacoes[j];
-            
-            k = ((grupo_atual).length) -2;
-    
-            while (k >= 0){ 
-              linha_atual = grupo_atual[k];
-              l = ((grupo_posterior).length) -2;
 
-              while (l >= 0){ 
-
-                linha_posterior = grupo_posterior[l];
-                
-                igual = 0;
-                for (var t = 0; t < linha_atual.length; t++){
-                  for (var p = 0; p < linha_posterior.length; p++){
-                    if (linha_atual[t] == linha_posterior[p]){
-                      igual += 1;
-                      
-                    }
-                  }
-                }
-                if ((igual == linha_posterior.length) && (linha_posterior.length < linha_atual.length)){
-                  grupo_posterior.splice(l, 2);
-                  if (i == j){
-                    k -= 2;
-                  }
-    
-                }else if ((igual == linha_atual.length) && (linha_atual.length < linha_posterior.length)){
-                  grupo_atual.splice(k, 2);
-                  if (i == j){
-                    k -= 2;
-                  }
-                }
-                l -= 2;
-              }
-              k -= 2;
-            }
-            
-          }
-        }
       possibilidade_merge = false;
-      }
     }
   }
-  construir_tabela();
   prime_implicants();
 }
