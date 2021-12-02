@@ -1,30 +1,41 @@
 n = 0; // número de variaveis, vai ser definido e usado por quase todas as funcoes
-
+step = false;
 //             DEFININDO QUANTIDADE DE VARIAVEIS E CRIANDO ARRAY'S            //
 
 function define_variaveis(){
   n = document.getElementById('variaveis').value;
-  
   minitermos = [];
   dont_cares = [];
   array_prime_implicants = [];
 
   document.getElementById('saida').innerHTML = ""; 
   document.getElementById('saida_dont').innerHTML = "";
-  document.getElementById('tabela').innerHTML = "";  
-
-  //CSS
-  document.getElementById('expressao').style.display = 'none';
-  document.getElementById('expressao_final').style.display = 'none';
-
+  limpar_tela();
 }
 
+function limpar_tela(){
+  
+  document.getElementById('tabela').innerHTML = ""; 
+  //CSS 
+  document.getElementById('tabela').style.display = 'none';
+  document.getElementById('expressao').style.display = 'none';
+  document.getElementById('expressao_final').style.display = 'none';
+  document.getElementById('step').style.display = 'none';
+
+  step = false;
+}
+
+
+function step_by_step(){
+  step = true;
+  document.getElementById('step').style.display = 'block';
+  simplificacao();
+}
 ////////////////////////////////////////////////////
 //            ADICIONANDO UM MINITERMO           //
 
 function add_minitermo(){
   if ((window.event ? event.keyCode : event.which) == 13) {
-    document.getElementById('tabela').innerHTML = "";  
     erro = document.getElementById('error');
     min = document.getElementById('minitermo').value;
 
@@ -49,11 +60,9 @@ function add_minitermo(){
     }else if (min >= 2**n){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
-    
-    document.getElementById('tabela').style.display = 'none';
-    document.getElementById('expressao').style.display = 'none';
-    document.getElementById('expressao_final').style.display = 'none';
-    simplificacao();
+
+    limpar_tela();
+    //simplificacao();
   
   }
   
@@ -73,14 +82,11 @@ function excluir_minitermo(id){
     minitermos.splice(minitermos.indexOf(min), 1);
 
     document.getElementById(min).remove();
-    document.getElementById('tabela').innerHTML = "";
 
-    //CSS
-    document.getElementById('expressao').style.display = 'none';
-    document.getElementById('expressao_final').style.display = 'none';
+    limpar_tela();
    
   }
-  simplificacao();
+  //simplificacao();
 }
 
 ///////////////////////////////////////////////////
@@ -89,7 +95,6 @@ function excluir_minitermo(id){
 function add_dont_care(){
 
   if ((window.event ? event.keyCode : event.which) == 13) {
-    document.getElementById('tabela').innerHTML = "";  
     erro = document.getElementById('error');
     dont = document.getElementById('dontcare').value;
 
@@ -113,11 +118,9 @@ function add_dont_care(){
     }else if (dont >= 2**n){
       erro.innerHTML = "Esse número extende a faixa de representação, digite um número menor";
     }
-
-    document.getElementById('tabela').style.display = 'none';
-    document.getElementById('expressao').style.display = 'none';
-    document.getElementById('expressao_final').style.display = 'none';
-    simplificacao();  
+    
+    limpar_tela();
+    //simplificacao();  
   }
   
 }
@@ -137,11 +140,8 @@ function excluir_dont_care(id){
     document.getElementById(dont).remove();
 
     //CSS
-    
-    document.getElementById('tabela').style.display = 'none';
-    document.getElementById('expressao').style.display = 'none';
-    document.getElementById('expressao_final').style.display = 'none';
-    simplificacao();
+    limpar_tela();
+    //simplificacao();
 
   }
 
@@ -254,8 +254,10 @@ function gerar_calculo_algebra(caminho){
         num_bin = Number(caminho[i]).toString(2).padStart(n, 0);
 
         algebra += ' ' + bin_literal(num_bin,n) + ' +';
-
-        if (i%2 != 0){
+        if (caminho.length == 1){
+          algebra = algebra.slice(0, -1);  
+        }
+        else if (i%2 != 0){
           algebra = algebra.slice(0, -1);
           merge = [];
           num_bin_1 = Number(caminho[i-1]).toString(2).padStart(n, 0);
@@ -371,15 +373,29 @@ function prime_implicants(){
 //////////////////////////////////////////////
 // CONSTRUIR TABELA HTML 
 
-function construir_tabela(){
+function linha_tabela(a,b,c){
+  var texto = '';
 
+  texto += '<tr>';
+  texto += '<td><b>' + a + '</b>&emsp;&emsp;&emsp;&emsp;' + b + '&emsp;&emsp;&emsp;&emsp;' +  bin_literal(b,n);
+  texto +=  '&emsp;&emsp;&emsp;&emsp;<a href="#"> <i id="icon_table" class="bi bi-pencil-square" data-toggle="modal" data-target="#ExemploModalCentralizado">';
+  texto += '<span id="mensagem_icon">'+ gerar_calculo_algebra(c) +' </span></i></a>';
+  texto += '</td>';
+  texto += '</tr>';
+
+  return texto;
+}
+
+function construir_tabela(){
   array_prime_implicants = [];
 
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     tabela = document.getElementById("tabela");
     //tabela.innerHTML = '';
     var myTable = '';
-    myTable += '<table class="table"> <thead> <tr> <th scope="col"> Tabela organizada pela quantidade de 1s </th> </tr>';
+    myTable += '<br><br><br><table class="table"> <thead> <tr> <th style="padding: 20px;font-size:15px" scope="col">STEP '+num_tabelas+'</th></tr>';
+    num_tabelas++;
+
     myTable +='<tr>';
     
     for (var i = 0; i <= n; i++){
@@ -396,20 +412,12 @@ function construir_tabela(){
         for (var j = 1; j < (grupo_atual).length; j++){
 
           if (j%2 != 0){
-              //alert('array_prime_implicants.indexOf(grupo_atual[j-1])__________'+array_prime_implicants.indexOf(grupo_atual[j-1]));
               if (array_prime_implicants.indexOf(grupo_atual[j-1]) < 0){
                 array_prime_implicants.push(grupo_atual[j-1],i);
         
               }
               caminho = grupo_atual[j-1].join(",");
-              //alert(caminho);
-              v = bin_literal(grupo_atual[j],n);
-              myTable += '<tr>';
-              myTable += '<td><b>' + caminho + '</b>&emsp;&emsp;&emsp;&emsp;' + grupo_atual[j] + '&emsp;&emsp;&emsp;&emsp;' + v;
-              myTable +=  '&emsp;&emsp;&emsp;&emsp;<a href="#"> <i id="icon_table" class="bi bi-pencil-square" data-toggle="modal" data-target="#ExemploModalCentralizado">';
-              myTable += '<span id="mensagem_icon">'+ gerar_calculo_algebra(grupo_atual[j-1]) +' </span></i></a>';
-              myTable += '</td>';
-              myTable += '</tr>';
+              myTable += linha_tabela(caminho,grupo_atual[j],grupo_atual[j-1]);
 
           }
         }  
@@ -417,11 +425,16 @@ function construir_tabela(){
       }
     }
 
-    myTable += '</tbody> </table> <br><br><br><br><br>';
-    tabela.innerHTML += myTable;
+    myTable += '</tbody> </table>';
+    if (step == false){
+      tabela.innerHTML += myTable;
     
-    document.getElementById('tabela').style.display = 'block';
-    document.getElementById('tabela').style.textAlign = 'center';
+      document.getElementById('tabela').style.display = 'block';
+      document.getElementById('tabela').style.textAlign = 'center';
+    }else{
+      alert('sei oq fazer n');
+    }
+
   }
 }
 
@@ -429,7 +442,6 @@ function construir_tabela(){
 /////       CRIAR EXPRESSAO ALGEBRICA     ////
 
 function criar_expressao(){
-
 
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
 
@@ -479,11 +491,13 @@ function criar_expressao(){
 
 ////////   ADD -> ARRAY COMBINACOES    //////
 
+
 function add_to_combinacoes(){
   juncao = minitermos.concat(dont_cares);
   juncao.sort(comparaNumeros);
 
   combinacoes = [];
+  num_tabelas = 0;
 
   for (var i = 0; i <= n; i++){
       combinacoes[i] = [];
@@ -502,15 +516,97 @@ function add_to_combinacoes(){
 }
 
 /////////////////////////////////////////////
+////////   EXCLUIR TERMOS INFERIORES   //////
 
+function excluir_termos_inferiores(m){
+
+  if ((combinacoes[m]).length == 2 && m != 0){    
+    if (combinacoes[m-1].length > 0){
+      // se o grupo atual só conter 2 itens, entao ele sera comparado com o anterior,
+      // verificando se tem a ocorrencia dele e so assim podera ser excluido
+      item_m = combinacoes[m][0];
+      achei = false;
+      
+      for (j=0; j < combinacoes[m-1].length; j++){
+        if (j%2 == 0){
+          igual = 0;
+          for(h = 0; h < item_m.length; h++){
+            if (combinacoes[m-1][j].indexOf(item_m[h]) >= 0){
+              igual += 1;
+            } 
+          }
+          if (igual == item_m.length){
+            achei = true;
+          }
+        }
+      }
+      if (achei == true){
+        combinacoes[m].splice(0, 2);
+      }
+    }
+  }else{  
+    var x = m;
+
+    if (m != 0){
+      if (combinacoes[m-1].length > 0){
+        x -= 1;
+      }
+    }
+
+    while (x <= m){
+      grupo_atual = combinacoes[x];
+
+      var y = m;
+
+      if (m != 0){
+        if (combinacoes[m-1].length > 0){
+          y -= 1;
+        }
+      }
+
+      while(y <= m){
+        grupo_posterior = combinacoes[y];
+        
+        k = (grupo_atual.length) -2;
+        while (k >= 0){ 
+          linha_atual = grupo_atual[k];
+          l = (grupo_posterior.length) -2;
+          while (l >= 0){ 
+
+            linha_posterior = grupo_posterior[l];
+            igual = 0;
+            for (var t = 0; t < linha_posterior.length; t++){
+              if (linha_atual.indexOf(linha_posterior[t]) >= 0){
+                igual += 1;
+              }
+            }
+            if (igual == linha_posterior.length && linha_posterior.length < linha_atual.length){
+              grupo_posterior.splice(l, 2);
+              if (x == y){
+                k -= 2;
+              }
+            }
+            l -= 2;
+          }
+          k -= 2;
+        }
+        y++;
+      }  
+      x++;  
+    }
+  }
+}
+
+/////////////////////////////////////////////
 
 function simplificacao(){
+  document.getElementById('tabela').innerHTML = "";  
   possibilidade_merge = true;
   add_to_combinacoes();
   criar_expressao();
-  construir_tabela();
-  while (possibilidade_merge == true){
 
+  while (possibilidade_merge == true){
+    construir_tabela();
     mudanca_array = 0;
     for (var i = 0; i < n; i++){
 
@@ -576,60 +672,19 @@ function simplificacao(){
               }
             }
           } 
-        }    
-      }
+        }
+      } 
+      if (combinacoes[i].length > 0){
+        excluir_termos_inferiores(i);
+        if(i+1 == n){
+          excluir_termos_inferiores(i+1);
+        }
+      }       
     }
     if (mudanca_array == 0){  
-      for (var i = 0; i <= n; i++){
-    
-        for (var j = 0; j <= n; j++){
-          if (((combinacoes[i]).length != 0) && ((combinacoes[j]).length != 0)){
-    
-            grupo_atual = combinacoes[i];
-            grupo_posterior = combinacoes[j];
-            
-            k = ((grupo_atual).length) -2;
-    
-            while (k >= 0){ 
-              linha_atual = grupo_atual[k];
-              l = ((grupo_posterior).length) -2;
 
-              while (l >= 0){ 
-
-                linha_posterior = grupo_posterior[l];
-                
-                igual = 0;
-                for (var t = 0; t < linha_atual.length; t++){
-                  for (var p = 0; p < linha_posterior.length; p++){
-                    if (linha_atual[t] == linha_posterior[p]){
-                      igual += 1;
-                      
-                    }
-                  }
-                }
-                if ((igual == linha_posterior.length) && (linha_posterior.length < linha_atual.length)){
-                  grupo_posterior.splice(l, 2);
-                  if (i == j){
-                    k -= 2;
-                  }
-    
-                }else if ((igual == linha_atual.length) && (linha_atual.length < linha_posterior.length)){
-                  grupo_atual.splice(k, 2);
-                  if (i == j){
-                    k -= 2;
-                  }
-                }
-                l -= 2;
-              }
-              k -= 2;
-            }
-            
-          }
-        }
       possibilidade_merge = false;
-      }
     }
   }
-  construir_tabela();
   prime_implicants();
 }
