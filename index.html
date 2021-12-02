@@ -10,54 +10,87 @@
 
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
     <script type="text/javascript" src="functions.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>      
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- JS code Modal -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+    <link rel="shortcut icon" type="imagex/png" href="icon.ico">
     <title>Algoritmo de Quine-McCluskey</title>
 
 </head>
+
+<!----------- MODAL ------------>
+
+<div class="modal fade" id="ExemploModalCentralizado" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="TituloModalCentralizado">Álgebra de Simplificação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body" id="algebra_modal">
+        ...
+        </div>
+    </div>
+  </div>
+</div>
+<!-- https://getbootstrap.com.br/docs/4.1/components/modal/ -->
+
 <body>
 
-    <p class="display-3 text-center mb-3 p-3">Algoritmo de Quine-McCluskey</p>
-   
-    <div class="container mt-3 ">
-        <form>
-            <div class="form-group">
-              <p id="error" style="background-color: brown;text-align: center;color: white;"> </p>
-            </div>
-            <div class="form-group">
-              <label for="formGroupExampleInput mt-3">Variáveis de Entrada</label>
-              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e ele será salvo automaticamente"></i>
-              <input type="number" id="variaveis" onkeyup="define_variaveis()" class="form-control" id="formGroupExampleInput" placeholder="Digite o número de variáveis">
-            </div>
-            <div class="form-group">
-              <label for="formGroupExampleInput mt-3">Insira um minitermo da Função</label>
-              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
-              <input type="number" id="minitermo" onkeyup="add_minitermo()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
-            </div>
-            <div class="form-group">
-              <div id="saida" for="formGroupExampleInput2"></div>
-            </div>
-            <div class="form-group">
-              <label for="formGroupExampleInput mt-3">Don't Cares da Função</label>
-              <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
-              <input type="number" id="dontcare" onkeyup="add_dont_care()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
-            </div>
-            <div class="form-group">
-              <label id="saida_dont" for="formGroupExampleInput2"></label>
-            </div>
-            <!--<div class="form-group">
-              <button class="btn" for="formGroupExampleInput2" type="button" onclick="simplificacao()">chamar tabela</button>
-            </div> -->
-            <div class="form-group">
-              <p class="display-5 text-center background-color-black" title="minitermos e don't cares da função" id="expressao" for="formGroupExampleInput2"></p>
-            </div>
-            <div class="form-group">
-              <label id="tabela" for="formGroupExampleInput2"></label>
-            </div>
-            <div class="form-group">
-              <p class="display-5 text-center background-color-black" id="expressao_final" for="formGroupExampleInput2"></p>
-            </div>
-        </form> 
-    </div>
-    
+  <p class="display-3 text-center mb-3 p-3"><img class="img mr-4" src="assets/logo.png" width="80px" height="80px"/>Algoritmo de Quine-McCluskey</p>
+  
+  <div class="container mt-3 ">
+      <form>
+          <div class="form-group">
+            <p id="error" style="background-color: brown;text-align: center;color: white;"> </p>
+          </div>
+          <div class="form-group">
+            <label for="formGroupExampleInput mt-3">Variáveis de Entrada</label>
+            <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e ele será salvo automaticamente"></i>
+            <input type="number" id="variaveis" onkeyup="define_variaveis()" class="form-control" id="formGroupExampleInput" placeholder="Digite o número de variáveis">
+          </div>
+          <div class="form-group">
+            <label for="formGroupExampleInput mt-3">Insira um minitermo da Função</label>
+            <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
+            <input type="number" id="minitermo" onkeyup="add_minitermo()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
+          </div>
+          <div class="form-group">
+            <div id="saida" for="formGroupExampleInput2"></div>
+          </div>
+          <div class="form-group">
+            <label for="formGroupExampleInput mt-3">Don't Cares da Função</label>
+            <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
+            <input type="number" id="dontcare" onkeyup="add_dont_care()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
+          </div>
+          <div class="form-group">
+            <label id="saida_dont" for="formGroupExampleInput2"></label>
+          </div>
+          <div class="form-group justify-content-center d-flex">
+            <button class="btn btn-primary mr-4" for="formGroupExampleInput2" type="button" onclick="simplificacao()">execução direta</button>
+            <!--<button class="btn btn-secondary ml-4" for="formGroupExampleInput2" type="button" onclick="step_by_step()">step-by-step</button>-->
+          </div>
+          <div class="form-group">
+            <p class="display-5 text-center background-color-black" title="minitermos e don't cares da função" id="expressao" for="formGroupExampleInput2"></p>
+          </div>
+          <div class="form-group">
+            <label id="tabela" for="formGroupExampleInput2"></label>
+          </div>
+          <!--<div class="form-group justify-content-center d-flex">
+            <button id="step" class="btn ml-4" for="formGroupExampleInput2" type="button" onclick="linha_liberada()">carreagar linha</button>
+          </div> -->
+          <br><br><br>
+          <div class="form-group">
+            <p class="display-5 text-center background-color-black" id="expressao_final" for="formGroupExampleInput2"></p>
+          </div>
+      </form> 
+  </div>
 </body>
+
 </html>
