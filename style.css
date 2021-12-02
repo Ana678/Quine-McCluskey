@@ -50,6 +50,9 @@ a,#icon_table{
     .modal-content {
         width: auto;
     }
+    #mensagem_icon{
+        display: none;
+    }
 }
 
 #step{
