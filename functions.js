@@ -566,8 +566,8 @@ function excluir_termos_inferiores(m){
 
       while(y <= m){
         grupo_posterior = combinacoes[y];
-        
         k = (grupo_atual.length) -2;
+        
         while (k >= 0){ 
           linha_atual = grupo_atual[k];
           l = (grupo_posterior.length) -2;
