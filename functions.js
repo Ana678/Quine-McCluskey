@@ -1,5 +1,6 @@
 n = 0; // número de variaveis, vai ser definido e usado por quase todas as funcoes
 step = false;
+count_cliques = 0;
 //             DEFININDO QUANTIDADE DE VARIAVEIS E CRIANDO ARRAY'S            //
 
 function define_variaveis(){
@@ -11,26 +12,108 @@ function define_variaveis(){
   document.getElementById('saida').innerHTML = ""; 
   document.getElementById('saida_dont').innerHTML = "";
   limpar_tela();
+
+  cliques = 0;
 }
 
 function limpar_tela(){
   
   document.getElementById('tabela').innerHTML = ""; 
+  document.getElementById('tabela_step').innerHTML = "";
   //CSS 
   document.getElementById('tabela').style.display = 'none';
+  document.getElementById('tabela_step').style.display = 'none';
   document.getElementById('expressao').style.display = 'none';
   document.getElementById('expressao_final').style.display = 'none';
   document.getElementById('step').style.display = 'none';
 
   step = false;
+  count_cliques = 0;
 }
 
+////////////////////////////////////////////////////
+//                  STEP BY STEP                  //
+function contar_frequencia_elemento(array,elemento){
+    count_frequencia = 0;
 
-/*function step_by_step(){
-  step = true;
-  document.getElementById('step').style.display = 'block';
+    for (i = 0; i < array.length; i++){
+      if (array[i] == elemento){
+        count_frequencia += 1;
+      }
+    }
+  return count_frequencia;
+}
+
+function no_step(){
+  limpar_tela();
   simplificacao();
-}*/ 
+
+}
+
+function step_by_step(){
+  limpar_tela();
+  document.getElementById('step').style.display = 'block';
+
+  step = true;
+  tabelas_step = [];
+
+  simplificacao();
+
+}
+
+function liberar_step(){
+  count_cliques += 1;
+  document.getElementById('tabela_step').innerHTML = ""; 
+  tabela = document.getElementById("tabela_step");
+  var myTable = '';
+  x = 0;
+
+  html_completo = false;
+
+  if (count_cliques > 0){
+    
+    for (i = 0; i < tabelas_step.length; i++){ 
+      myTable += '<br><br><br><table class="table">';
+      tabela_atual = tabelas_step[i];
+      
+  
+      for (j = 0; j < tabela_atual.length; j++){
+        if(x < count_cliques){   
+          
+          if(tabela_atual[j].substring(0,7) == '<thead>'){
+            myTable += tabela_atual[j];
+            myTable += '<tbody>';
+          
+          }else if(tabela_atual[j].substring(0,25) == '<tr><th scope="col">GRUPO'){
+            myTable += tabela_atual[j];
+
+          }else{
+            myTable += tabela_atual[j];
+ 
+            x++;
+          }
+           
+          if (i == (tabelas_step.length -1) && j == (tabela_atual.length -1) ){
+            html_completo = true;
+          }
+
+        }
+      }
+      myTable += '</tbody></table>';
+    }
+  
+  tabela.innerHTML += myTable;
+  document.getElementById('tabela_step').style.display = 'block';
+  document.getElementById('tabela_step').style.textAlign = 'center';
+
+  if(html_completo == true){
+    document.getElementById('step').style.display = 'none';
+    prime_implicants();
+  }
+}
+
+}
+
 
 ////////////////////////////////////////////////////
 //            ADICIONANDO UM MINITERMO           //
@@ -65,9 +148,7 @@ function add_minitermo(){
     limpar_tela();
     //simplificacao();
   
-  }
-  
-
+  } 
   
 }
 
@@ -389,27 +470,35 @@ function linha_tabela(a,b,c){
 
 function construir_tabela(){
   array_prime_implicants = [];
+  array_step = [];
 
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     tabela = document.getElementById("tabela");
     //tabela.innerHTML = '';
     var myTable = '';
-    myTable += '<br><br><br><table class="table"> <thead> <tr> <th style="padding: 20px;font-size:15px" scope="col">STEP '+num_tabelas+'</th></tr>';
+    thead = '<thead> <tr> <th style="padding: 20px;font-size:15px" scope="col">STEP '+num_tabelas+'</th></tr></thead>';
     num_tabelas++;
 
-    myTable +='<tr>';
-    
+    if (step == false || (step == true && num_tabelas == 1)){
+      myTable += '<br><br><br><table class="table">' + thead +'<tbody>';
+    }else{
+      array_step.push(thead);
+    }
+
     for (var i = 0; i <= n; i++){
 
       grupo_atual = combinacoes[i];
 
       if ((grupo_atual).length != 0){
         
-        myTable += '<th scope="col">' + 'GRUPO ' + i + '</th>'; 
-      
-        myTable += '</tr> </thead> <tbody>';
+        nome_grupo = '<tr><th scope="col">' + 'GRUPO ' + i + '</th></tr>'
         
-
+        if (step == false || (step == true && num_tabelas == 1)){
+          myTable += nome_grupo;
+        }else{
+          array_step.push(nome_grupo);
+        }
+        
         for (var j = 1; j < (grupo_atual).length; j++){
 
           if (j%2 != 0){
@@ -417,8 +506,15 @@ function construir_tabela(){
                 array_prime_implicants.push(grupo_atual[j-1],i);
         
               }
+              
               caminho = grupo_atual[j-1].join(",");
-              myTable += linha_tabela(caminho,grupo_atual[j],grupo_atual[j-1]);
+              conteudo_linha = linha_tabela(caminho,grupo_atual[j],grupo_atual[j-1]);
+              if (step == false || (step == true && num_tabelas == 1)){
+                myTable += conteudo_linha;
+
+              }else{
+                array_step.push(conteudo_linha);
+              }
 
           }
         }  
@@ -426,14 +522,14 @@ function construir_tabela(){
       }
     }
 
-    myTable += '</tbody> </table>';
-    if (step == false){
+    myTable += '</tbody></table>';
+    //alert(myTable)
+    if (step == false || (step == true && num_tabelas == 1)){
       tabela.innerHTML += myTable;
-    
       document.getElementById('tabela').style.display = 'block';
       document.getElementById('tabela').style.textAlign = 'center';
     }else{
-      alert('sei oq fazer n');
+      tabelas_step.push(array_step);
     }
 
   }
@@ -567,8 +663,8 @@ function excluir_termos_inferiores(m){
 
       while(y <= m){
         grupo_posterior = combinacoes[y];
+        
         k = (grupo_atual.length) -2;
-
         while (k >= 0){ 
           linha_atual = grupo_atual[k];
           l = (grupo_posterior.length) -2;
@@ -687,5 +783,8 @@ function simplificacao(){
       possibilidade_merge = false;
     }
   }
-  prime_implicants();
+  if(step == false){
+    prime_implicants();
+  }
+  
 }

@@ -49,6 +49,8 @@ a,#icon_table{
 @media (max-width: 700px){
     .modal-content {
         width: auto;
+        display: flex;
+        justify-content: center;
     }
     #mensagem_icon{
         display: none;
