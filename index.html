@@ -44,50 +44,52 @@
 
 <body>
 
-  <p class="display-3 text-center mb-3 p-3"><img class="img mr-4" src="assets/logo.png" width="80px" height="80px"/>Algoritmo de Quine-McCluskey</p>
+  <p class="display-3 text-center mb-3 p-3"><!--<img class="img mr-4" src="assets/logo.png" width="80px" height="80px"/>-->Algoritmo de Quine-McCluskey</p>
   
   <div class="container mt-3 ">
       <form>
           <div class="form-group">
             <p id="error" style="background-color: brown;text-align: center;color: white;"> </p>
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <label for="formGroupExampleInput mt-3">Variáveis de Entrada</label>
             <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e ele será salvo automaticamente"></i>
             <input type="number" id="variaveis" onkeyup="define_variaveis()" class="form-control" id="formGroupExampleInput" placeholder="Digite o número de variáveis">
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <label for="formGroupExampleInput mt-3">Insira um minitermo da Função</label>
             <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
             <input type="number" id="minitermo" onkeyup="add_minitermo()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <div id="saida" for="formGroupExampleInput2"></div>
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <label for="formGroupExampleInput mt-3">Don't Cares da Função</label>
             <i class="bi bi-question-circle d-inline ml-2" title="Você deve digitar um número inteiro e pressionar a tecla Enter"></i>
             <input type="number" id="dontcare" onkeyup="add_dont_care()" class="form-control" id="formGroupExampleInput" placeholder="Insira um valor e pressione ENTER ...">
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <label id="saida_dont" for="formGroupExampleInput2"></label>
           </div>
-          <div class="form-group justify-content-center d-flex">
+          <div class="form-group justify-content-center d-flex mb-3">
             <button class="btn btn-primary mr-4" for="formGroupExampleInput2" type="button" onclick="no_step()">execução direta</button>
             <button class="btn btn-secondary ml-4" for="formGroupExampleInput2" type="button" onclick="step_by_step()">step-by-step</button>
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <p class="display-5 text-center background-color-black" title="minitermos e don't cares da função" id="expressao" for="formGroupExampleInput2"></p>
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
+            <div id="tabela_verdade"></div>
             <div id="tabela"></div>
             <div id="tabela_step"></div>
+            <div id="tabela_implicants"></div>
           </div>
-          <div class="form-group justify-content-center d-flex">
+          <div class="form-group justify-content-center d-flex mb-3">
             <button id="step" class="btn ml-4" for="formGroupExampleInput2" type="button" onclick="liberar_step()">fazer merge</button>
           </div>
           <br><br><br>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <p class="display-5 text-center background-color-black" id="expressao_final" for="formGroupExampleInput2"></p>
           </div>
       </form> 
