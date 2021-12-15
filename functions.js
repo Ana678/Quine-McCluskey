@@ -327,7 +327,6 @@ function arrays_iguais(a,b){
 /////       GERAR CALCULO ALGEBRA     ////
 
 function gerar_calculo_algebra(caminho){
-
   var algebra = '';
   grupos = caminho.length/2;
   array_merge = [];
@@ -356,34 +355,15 @@ function gerar_calculo_algebra(caminho){
           algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
         }
       }
-
-    /*}else{
-      if(array_merge.length%2 == 0){
-        for (i = 0; i < array_merge.length; i++){
-
-          algebra += ' ' + bin_literal(array_merge[i],n) + ' +';
-
-          if (i%2 != 0){
-            algebra = algebra.slice(0, -1);
-            merge = []; 
-
-            for(l = 0; l < n; l++){
-              if (array_merge[i][l] == array_merge[i-1][l]){
-                merge.push(array_merge[i]);
-              }else{
-                merge.push('-');
-              }
-            }
-            array_merge.push(merge);
-            algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
-          }
-        }
-      }
-    }
-    grupos-=1;
-  }
-  document.getElementById('algebra_modal').innerHTML = algebra;*/
+  
   return algebra;
+}
+
+function enviaModal(id){
+  id = id.split(",");
+  algebra = gerar_calculo_algebra(id);
+  document.getElementById('algebra_modal').innerHTML = algebra;
+  
 }
 
 //////////////////////////////////////////////
@@ -668,7 +648,7 @@ function linha_tabela(a,b,c){
 
   texto += '<tr>';
   texto += '<td><b>' + a + '</b></td><td>' + b + '</td><td>' +  bin_literal(b,n);
-  texto +=  '</td><td><a href="#"> <i id="icon_table" class="bi bi-pencil-square" data-toggle="modal" data-target="#ExemploModalCentralizado">';
+  texto +=  '</td><td><a onclick="enviaModal(this.id)" id="'+c+'" role="button" data-toggle="modal" data-target="#ExemploModalCentralizado"> <i  id="icon_table" class="bi bi-pencil-square">';
   texto += '<span id="mensagem_icon">'+ gerar_calculo_algebra(c) +' </span></i></a>';
   texto += '</td>';
   texto += '</tr>';
