@@ -1,6 +1,7 @@
 n = 0; // número de variaveis, vai ser definido e usado por quase todas as funcoes
 step = false;
 count_cliques = 0;
+
 //             DEFININDO QUANTIDADE DE VARIAVEIS E CRIANDO ARRAY'S            //
 
 function define_variaveis(){
@@ -27,6 +28,7 @@ function limpar_tela(){
   document.getElementById('tabela_verdade').style.display = 'none';
   document.getElementById('tabela_implicants').style.display = 'none';
   document.getElementById('tabela_step').style.display = 'none';
+
   document.getElementById('expressao').style.display = 'none';
   document.getElementById('expressao_final').style.display = 'none';
   document.getElementById('step').style.display = 'none';
@@ -35,15 +37,25 @@ function limpar_tela(){
   count_cliques = 0;
 }
 
+
+////////////////////////////////////////////////////
+//            Funcao De Execucao Direta           //
+
 function no_step(){
   limpar_tela();
   simplificacao();
 
 }
 
+////////////////////////////////////////////////////
+//      Funcoes relacionadas ao STEP-BY-STEP      //
+
 function step_by_step(){
   limpar_tela();
-  document.getElementById('step').style.display = 'block';
+  
+  if((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
+    document.getElementById('step').style.display = 'block';
+  }
 
   step = true;
   tabelas_step = [];
@@ -105,7 +117,6 @@ function liberar_step(){
 
 }
 
-
 ////////////////////////////////////////////////////
 //            ADICIONANDO UM MINITERMO           //
 
@@ -141,7 +152,6 @@ function add_minitermo(){
     }
 
     limpar_tela();
-    //simplificacao();
   
   } 
   
@@ -163,7 +173,6 @@ function excluir_minitermo(id){
     limpar_tela();
    
   }
-  //simplificacao();
 }
 
 ///////////////////////////////////////////////////
@@ -201,7 +210,6 @@ function add_dont_care(){
     }
     
     limpar_tela();
-    //simplificacao();  
   }
   
 }
@@ -222,14 +230,38 @@ function excluir_dont_care(id){
 
     //CSS
     limpar_tela();
-    //simplificacao();
 
   }
 
 }
 
 ////////////////////////////////////////////////////
+////////   ADD -> ARRAY COMBINACOES    //////
 
+
+function add_to_combinacoes(){
+  juncao = minitermos.concat(dont_cares).map(Number);
+  juncao.sort(comparaNumeros);
+
+  combinacoes = [];
+  num_tabelas = 0;
+
+  for (var i = 0; i <= n; i++){
+      combinacoes[i] = [];
+  }
+  
+  for (i=0; i < juncao.length; i++){
+
+    num_bin = Number(juncao[i]).toString(2).padStart(n, 0);
+    grupo = (num_bin.split('1').length) -1;
+    caminho = [];
+    caminho.push(juncao[i]);
+    combinacoes[grupo].push(caminho,num_bin);
+
+  }
+}
+
+/////////////////////////////////////////////
 // TRANSFORMACAO BINARIO EM LITERAL STRING
 
 function bin_literal(numero,n){
@@ -256,51 +288,12 @@ function bin_literal(numero,n){
 
 ////////////////////////////////////////////
 
-// CONFERIR SE STRING SE REPETE     
-
-function str_unica(texto){
-
-  lista_texto = (texto).split(',');
-  array_verifica = [];
-  repetido = 0;
-  achei = false;
-  for (var i = 0; i < (lista_texto).length; i++){
-
-    verifica_in_array = array_verifica.includes(lista_texto[i]);
-    
-    if (verifica_in_array == false){
-      array_verifica.push(lista_texto[i]);
-    }else{
-      repetido += 1;
-      if (repetido > 0){
-        achei = true;
-      }
-    }
-
-  }
-  return achei;
-}
-//////////////////////////
-
 // FUNÇÃO EXTRAIDA DE UM SITE ONLINE https://www.alura.com.br/artigos/ordenacao-de-numeros-no-javascript-nao-funciona
 
 // usada para resolver esse problema: [1,2,11,3,5,0]  ->  [11,0,1,2,3,5]
-// Esta sendo chamada na funcao num_ordenados()
+// Esta sendo chamada como parametro da funcao sort()
 
 function comparaNumeros(a,b) { if (a == b) return 0; if (a < b) return -1; if (a > b) return 1; } 
-
-
-//////////////////////////
-
-// ORDENAR NUMEROS    
-
-function num_ordenados(sequencia){
-
-  ordenados = sequencia.split(',').map(Number);
-  ordenados.sort(comparaNumeros);
-
-  return ordenados.map(String).join(",");
-}
 
 ///////////////////////////////////////////
 
@@ -327,39 +320,40 @@ function arrays_iguais(a,b){
 /////       GERAR CALCULO ALGEBRA     ////
 
 function gerar_calculo_algebra(caminho){
+
   var algebra = '';
   grupos = caminho.length/2;
   array_merge = [];
-  /*while (grupos > 0){
-    if (array_merge.length === 0){*/
-      for (i = 0; i < caminho.length; i++){
-        num_bin = Number(caminho[i]).toString(2).padStart(n, 0);
 
-        algebra += ' ' + bin_literal(num_bin,n) + ' +';
-        if (caminho.length == 1){
-          algebra = algebra.slice(0, -1);  
-        }
-        else if (i%2 != 0){
-          algebra = algebra.slice(0, -1);
-          merge = [];
-          num_bin_1 = Number(caminho[i-1]).toString(2).padStart(n, 0);
+  for (i = 0; i < caminho.length; i++){
+    num_bin = Number(caminho[i]).toString(2).padStart(n, 0);
 
-          for(l = 0; l < n; l++){
-            if (num_bin_1[l] == num_bin[l]){
-              merge.push(num_bin[l]);
-            }else{
-              merge.push('-');
-            }
-          }
-          array_merge.push(merge);
-          algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
+    algebra += ' ' + bin_literal(num_bin,n) + ' +';
+    if (caminho.length == 1){
+      algebra = algebra.slice(0, -1);  
+    }
+    else if (i%2 != 0){
+      algebra = algebra.slice(0, -1);
+      merge = [];
+      num_bin_1 = Number(caminho[i-1]).toString(2).padStart(n, 0);
+
+      for(l = 0; l < n; l++){
+        if (num_bin_1[l] == num_bin[l]){
+          merge.push(num_bin[l]);
+        }else{
+          merge.push('-');
         }
       }
+      array_merge.push(merge);
+      algebra += '<br>' + bin_literal(merge.join(''),n) + '<br>';
+    }
+  }
   
   return algebra;
 }
 
-function enviaModal(id){
+function enviaModal(id){ // envia o calculo para dentro do modal
+
   id = id.split(",");
   algebra = gerar_calculo_algebra(id);
   document.getElementById('algebra_modal').innerHTML = algebra;
@@ -375,226 +369,234 @@ function prime_implicants(){
     letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     expressao_html = document.getElementById("expressao_final");
     var expressao_algebrica = '';
+    var texto_funcao = '';
+    // variaveis
+    texto_funcao += 'F(';
+    for(j = 0; j < n; j++){
+      texto_funcao += letras[j] + ',';
+    }
+    texto_funcao = texto_funcao.slice(0, -1);
+    texto_funcao += ') = ';
+    ///
     
-    multiplas_combinacoes = [];
-    possibilidade_combinacao = true;
-    termos_implicants = [];
+    if((minitermos.length + dont_cares.length) < 2**n){
+      multiplas_combinacoes = [];
+      possibilidade_combinacao = true;
+      termos_implicants = [];
 
-    for (j = 0; j <array_prime_implicants.length; j++){
-      if (j%2 == 0){
-        for (k = 0; k < array_prime_implicants[j].length; k++){
-          if(termos_implicants.includes(array_prime_implicants[j][k]) == false && minitermos.includes(array_prime_implicants[j][k].toString()) == true){
-            termos_implicants.push(array_prime_implicants[j][k]);
+      for (j = 0; j <array_prime_implicants.length; j++){
+        if (j%2 == 0){
+          for (k = 0; k < array_prime_implicants[j].length; k++){
+            if(termos_implicants.includes(array_prime_implicants[j][k]) == false && minitermos.includes(array_prime_implicants[j][k].toString()) == true){
+              termos_implicants.push(array_prime_implicants[j][k]);
+            }
           }
         }
       }
-    }
 
-    while(possibilidade_combinacao == true){
-      
-      if(multiplas_combinacoes.length == 0){
-
-        termos_existentes = [];
-        termos_existentes = termos_existentes.concat(termos_implicants);
-        array_atual = [];
-
-        j = array_prime_implicants.length -2;
-        while(j >= 0){
-          var i = termos_existentes.length -1;
-          while (i >= 0){ 
+      while(possibilidade_combinacao == true){
         
-            termo = termos_existentes[i];
-            array_pi = array_prime_implicants[j];
-            add = false;
+        if(multiplas_combinacoes.length == 0){
 
-            if (array_pi.indexOf(termo) >= 0 && array_atual.indexOf(array_pi.join(",")) < 0){
-              
+          termos_existentes = [];
+          termos_existentes = termos_existentes.concat(termos_implicants);
+          array_atual = [];
 
-              valida_num = valida_contem_termos(array_pi,termos_existentes);
+          j = array_prime_implicants.length -2;
+          while(j >= 0){
+            var i = termos_existentes.length -1;
+            while (i >= 0){ 
+          
+              termo = termos_existentes[i];
+              array_pi = array_prime_implicants[j];
+              add = false;
 
-              if(valida_num == array_pi.join(',')){
-                array_atual.push(array_pi.join(","));
-                add = true;
+              if (array_pi.indexOf(termo) >= 0 && array_atual.indexOf(array_pi.join(",")) < 0){
+                
 
-              }else{
-                array_atual.push(valida_num);
-                array_2 = valida_num.split(',');  
-                for(l = 0; l < array_2.length; l++){
+                valida_num = valida_contem_termos(array_pi,termos_existentes);
+
+                if(valida_num == array_pi.join(',')){
+                  array_atual.push(array_pi.join(","));
+                  add = true;
+
+                }else{
+                  array_atual.push(valida_num);
+                  array_2 = valida_num.split(',');  
+                  for(l = 0; l < array_2.length; l++){
+                    g = termos_existentes.length - 1;
+                    while(g >= 0){
+                      if(termos_existentes[g] == array_2[l]){
+                        termos_existentes.splice(g,1);
+                      }
+                      g--;
+                    }
+                  }
+                  i = termos_existentes.length;
+                }
+              } 
+
+              if(add == true){
+                for(l = 0; l < array_pi.length; l++){
                   g = termos_existentes.length - 1;
                   while(g >= 0){
-                    if(termos_existentes[g] == array_2[l]){
+                    if(termos_existentes[g] == array_pi[l]){
                       termos_existentes.splice(g,1);
                     }
                     g--;
                   }
                 }
-                i = termos_existentes.length;
+                i = termos_existentes.length -1;
+              }else{
+                i--;
               }
-            } 
-
-            if(add == true){
-              for(l = 0; l < array_pi.length; l++){
-                g = termos_existentes.length - 1;
-                while(g >= 0){
-                  if(termos_existentes[g] == array_pi[l]){
-                    termos_existentes.splice(g,1);
-                  }
-                  g--;
-                }
-              }
-              i = termos_existentes.length -1;
-            }else{
-              i--;
-            }
-          }  
-          j-= 2;
-        }
-
-        multiplas_combinacoes.push(array_atual);
-        
-      }else{
-
-        i = array_prime_implicants.length -2;
-
-        while(i >= 0){
-
-          array_posterior = [];
-          termos_existentes = [];
-          termos_existentes = termos_existentes.concat(termos_implicants);
-          
-          termo_i = array_prime_implicants[i];
-
-          array_posterior.push(termo_i.join(","));
-          for(l = 0; l < termo_i.length; l++){ // exclui termos usados
-            g = termos_existentes.length - 1;
-            while(g >= 0){
-              if(termos_existentes[g] == termo_i[l]){
-                termos_existentes.splice(g,1);
-              }
-              g--;
-            }
-          }
-
-          j = array_prime_implicants.length -2;
-          while(j >=0){
-            termo_j = array_prime_implicants[j];
-
-            existe = 0;
-            for(t = 0; t < termos_existentes.length; t++){ // verifica se possui termo nao usados
-              if(termo_j.indexOf(termos_existentes[t]) >= 0){
-                existe++;
-              }
-            }
-            
-            if((termo_i != termo_j) && (array_posterior.indexOf(termo_j.join(",")) < 0) && (existe > 0 )){
-              
-              array_posterior.push(termo_j.join(","));
-
-              for(l = 0; l < termo_j.length; l++){ // exclui termos usados
-                g = termos_existentes.length - 1;
-                while(g >= 0){
-                  if(termos_existentes[g] == termo_j[l]){
-                    termos_existentes.splice(g,1);
-                  }
-                  g--;
-                }
-              }
-            }
+            }  
             j-= 2;
           }
-          
-          if(termos_existentes.length == 0){    
 
-            // ver se tem algum termo extra e exclui
-            for(p = array_posterior.length -1; p >= 0; p--){
-              termo_p = array_posterior[p].split(',');
-              achei_igual = 0;
-              for(q = 0; q < termo_p.length; q++){
-                for(r = array_posterior.length -1; r >= 0; r--){
-                  termo_r = array_posterior[r].split(',');
-                  for(s = 0; s < termo_r.length; s++){
-                    if(termo_p[q] == termo_r[s] && array_posterior[p] != array_posterior[r]){
-                      achei_igual += 1;
+          multiplas_combinacoes.push(array_atual);
+          
+        }else{
+
+          i = array_prime_implicants.length -2;
+
+          while(i >= 0){
+
+            array_posterior = [];
+            termos_existentes = [];
+            termos_existentes = termos_existentes.concat(termos_implicants);
+            
+            termo_i = array_prime_implicants[i];
+
+            array_posterior.push(termo_i.join(","));
+            for(l = 0; l < termo_i.length; l++){ // exclui termos usados
+              g = termos_existentes.length - 1;
+              while(g >= 0){
+                if(termos_existentes[g] == termo_i[l]){
+                  termos_existentes.splice(g,1);
+                }
+                g--;
+              }
+            }
+
+            j = array_prime_implicants.length -2;
+            while(j >=0){
+              termo_j = array_prime_implicants[j];
+
+              existe = 0;
+              for(t = 0; t < termos_existentes.length; t++){ // verifica se possui termo nao usados
+                if(termo_j.indexOf(termos_existentes[t]) >= 0){
+                  existe++;
+                }
+              }
+              
+              if((termo_i != termo_j) && (array_posterior.indexOf(termo_j.join(",")) < 0) && (existe > 0 )){
+                
+                array_posterior.push(termo_j.join(","));
+
+                for(l = 0; l < termo_j.length; l++){ // exclui termos usados
+                  g = termos_existentes.length - 1;
+                  while(g >= 0){
+                    if(termos_existentes[g] == termo_j[l]){
+                      termos_existentes.splice(g,1);
+                    }
+                    g--;
+                  }
+                }
+              }
+              j-= 2;
+            }
+            
+            if(termos_existentes.length == 0){    
+
+              // ver se tem algum termo extra e exclui
+              for(p = array_posterior.length -1; p >= 0; p--){
+                termo_p = array_posterior[p].split(',');
+                achei_igual = 0;
+                for(q = 0; q < termo_p.length; q++){
+                  for(r = array_posterior.length -1; r >= 0; r--){
+                    termo_r = array_posterior[r].split(',');
+                    for(s = 0; s < termo_r.length; s++){
+                      if(termo_p[q] == termo_r[s] && array_posterior[p] != array_posterior[r]){
+                        achei_igual += 1;
+                      }
                     }
                   }
                 }
-              }
-              if(achei_igual == termo_p.length){
-                array_posterior.splice(p,1);
-              }
-            }
-          
-            //////////////////////////////////////////
-
-            //verifica se essa combinacao final ja existe
-            combinacao_existe = false;
-            for(m=0; m < multiplas_combinacoes.length; m++){ 
-              cont_iguais =0;
-              for(o=0; o < multiplas_combinacoes[m].length; o++){
-                for(p=0; p < array_posterior.length; p++){
-                  if(multiplas_combinacoes[m][o] == array_posterior[p]){
-                    cont_iguais += 1;
-                  }
+                if(achei_igual == termo_p.length){
+                  array_posterior.splice(p,1);
                 }
               }
-              if(cont_iguais == array_posterior.length){
-                combinacao_existe = true;
+            
+              //////////////////////////////////////////
+
+              //verifica se essa combinacao final ja existe
+              combinacao_existe = false;
+              for(m=0; m < multiplas_combinacoes.length; m++){ 
+                cont_iguais =0;
+                for(o=0; o < multiplas_combinacoes[m].length; o++){
+                  for(p=0; p < array_posterior.length; p++){
+                    if(multiplas_combinacoes[m][o] == array_posterior[p]){
+                      cont_iguais += 1;
+                    }
+                  }
+                }
+                if(cont_iguais == array_posterior.length){
+                  combinacao_existe = true;
+                }
+              }
+              /////////////////////////////////////////
+
+              if(combinacao_existe == false && array_posterior.length == multiplas_combinacoes[0].length){
+                multiplas_combinacoes.push(array_posterior);
               }
             }
-            /////////////////////////////////////////
 
-            if(combinacao_existe == false && array_posterior.length == multiplas_combinacoes[0].length){
-              multiplas_combinacoes.push(array_posterior);
-            }
+            i -= 2;
           }
-
-          i -= 2;
-        }
-        possibilidade_combinacao = false;
-      }
-    
-    }
-
-    if (multiplas_combinacoes.length > 0){
-    
-      for (var i = 0; i < multiplas_combinacoes.length; i++){
-        // variaveis
-        expressao_algebrica += 'F(';
-
-        for(j = 0; j < n; j++){
-          expressao_algebrica += letras[j] + ',';
+          possibilidade_combinacao = false;
         }
       
-        expressao_algebrica = expressao_algebrica.slice(0, -1);
-        expressao_algebrica += ') = ';
-        ///
-
-        for (r = 0; r < multiplas_combinacoes[i].length; r++){
-          grupo = 0;
-          indice = 0;
-          p = array_prime_implicants.length -2;
-          while(p >= 0){
-            if(multiplas_combinacoes[i][r] == array_prime_implicants[p]){
-              grupo = array_prime_implicants[p+1]; 
-              indice = combinacoes[grupo].indexOf(array_prime_implicants[p]) + 1;
-            }
-            p -= 2;
-          }
-          v = bin_literal((combinacoes[grupo][indice]),n);
-          expressao_algebrica += ' ' + v + ' +';
-        }
-        expressao_algebrica = expressao_algebrica.slice(0, -1);
-        if((i + 1) < multiplas_combinacoes.length){
-          expressao_algebrica += '&nbsp;&nbsp;  ou &nbsp;&nbsp; ';
-        }
-
       }
-    }
 
-    expressao_html.innerHTML = expressao_algebrica;
-    document.getElementById('expressao_final').style.display = 'block';
-    tabela_implicants();
+      if (multiplas_combinacoes.length > 0){
+      
+        for (var i = 0; i < multiplas_combinacoes.length; i++){
+          // variaveis
+          expressao_algebrica += texto_funcao;
+          ///
+
+          for (r = 0; r < multiplas_combinacoes[i].length; r++){
+            grupo = 0;
+            indice = 0;
+            p = array_prime_implicants.length -2;
+            while(p >= 0){
+              if(multiplas_combinacoes[i][r] == array_prime_implicants[p]){
+                grupo = array_prime_implicants[p+1]; 
+                indice = combinacoes[grupo].indexOf(array_prime_implicants[p]) + 1;
+              }
+              p -= 2;
+            }
+            v = bin_literal((combinacoes[grupo][indice]),n);
+            expressao_algebrica += ' ' + v + ' +';
+          }
+          expressao_algebrica = expressao_algebrica.slice(0, -1);
+          if((i + 1) < multiplas_combinacoes.length){
+            expressao_algebrica += '&nbsp;&nbsp;  ou &nbsp;&nbsp; ';
+          }
+
+        }
+      }
+
+    }else{
+    expressao_algebrica = texto_funcao + "&nbsp; 1";
+    }
   }
+
+  expressao_html.innerHTML = expressao_algebrica;
+  document.getElementById('expressao_final').style.display = 'block';
+  tabela_implicants();
+
 }
 //////////////////////////////////////////////
 // VALIDA CONTEM TERMOS EXCLUIDOS
@@ -625,7 +627,6 @@ function valida_contem_termos(array_pi,termos_existentes){
         }      
 
         if(termos < contem_termos_excluidos){
-         // array_posterior.push(array_prime_implicants[x].join(","));
           termo_final = array_prime_implicants[x].join(",");
 
           x = -1;
@@ -641,7 +642,47 @@ function valida_contem_termos(array_pi,termos_existentes){
 }
 
 //////////////////////////////////////////////
-// CONSTRUIR TABELA HTML 
+/////       CRIAR TABELA VERDADE         /////
+
+function tabela_verdade(){
+
+  if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
+    tabela = document.getElementById("tabela_verdade");
+  
+    var myTable = '';
+    thead = '<thead> <tr><th style="padding: 20px;font-size:15px" align:"center" colspan="3" scope="col">TABELA VERDADE</th></tr></thead>';
+
+    num_bin = ((2**n)-1).toString(2).padStart(n, 0);
+    literal = bin_literal(num_bin,n);
+
+    myTable += '<br><br><br><table class="table">' + thead +'<tbody>';
+    myTable += '<tr> <th scope="col" style="text-align:right">  #  </th><th scope="col">'+ literal.split('  ').join('&emsp;&emsp;&emsp;') +'</th><th style="text-align:left" scope="col">  Saída  </th></tr>';
+
+    for (var i = 0; i < 2**n; i++){
+      saida = '0';
+
+      num_bin = (i).toString(2).padStart(n, 0);
+
+      if(minitermos.includes(i.toString()) == true){
+        saida = '<span style="color:red">1</span>';
+      }else if(dont_cares.includes(i.toString()) == true){
+        saida = '<span style="color:red">x</span>';
+      }
+      myTable += '<tr><td style="text-align:right">'+i+'</td> <td>'+num_bin.split('').join('&emsp;&emsp;&emsp;') +'</td> <td style="text-align:left;padding-left:25px">'+saida+'</td></tr>';
+      
+    }
+
+    myTable += '</tbody></table>';
+    tabela.innerHTML = myTable;
+    document.getElementById('tabela_verdade').style.display = 'block';
+    document.getElementById('tabela_verdade').style.textAlign = 'center';
+
+  }
+}
+
+
+//////////////////////////////////////////////
+//           CONSTRUIR TABELA STEP          //
 
 function linha_tabela(a,b,c){
   var texto = '';
@@ -723,46 +764,6 @@ function construir_tabela(){
 }
 
 //////////////////////////////////////////////
-/////       CRIAR TABELA VERDADE         /////
-
-function tabela_verdade(){
-
-  if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
-    tabela = document.getElementById("tabela_verdade");
-    //tabela.innerHTML = '';
-    var myTable = '';
-    thead = '<thead> <tr><th style="padding: 20px;font-size:15px" align:"center" colspan="3" scope="col">TABELA VERDADE</th></tr></thead>';
-
-    num_bin = ((2**n)-1).toString(2).padStart(n, 0);
-    literal = bin_literal(num_bin,n);
-
-    myTable += '<br><br><br><table class="table">' + thead +'<tbody>';
-    myTable += '<tr> <th scope="col" style="text-align:right">  #  </th><th scope="col">'+ literal.split('  ').join('&emsp;&emsp;&emsp;') +'</th><th style="text-align:left" scope="col">  Saída  </th></tr>';
-
-    for (var i = 0; i < 2**n; i++){
-      saida = '0';
-
-      num_bin = (i).toString(2).padStart(n, 0);
-
-      if(minitermos.includes(i.toString()) == true){
-        saida = '<span style="color:red">1</span>';
-      }else if(dont_cares.includes(i.toString()) == true){
-        saida = '<span style="color:red">x</span>';
-      }
-      myTable += '<tr><td style="text-align:right">'+i+'</td> <td>'+num_bin.split('').join('&emsp;&emsp;&emsp;') +'</td> <td style="text-align:left;padding-left:25px">'+saida+'</td></tr>';
-      
-    }
-
-    myTable += '</tbody></table>';
-    tabela.innerHTML = myTable;
-    document.getElementById('tabela_verdade').style.display = 'block';
-    document.getElementById('tabela_verdade').style.textAlign = 'center';
-
-  }
-}
-
-
-//////////////////////////////////////////////
 /////      CRIAR TABELA IMPLICANTS       /////
 
 function tabela_implicants(){
@@ -771,7 +772,6 @@ function tabela_implicants(){
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     tabela = document.getElementById("tabela_implicants");
    
-    //tabela.innerHTML = '';
     var myTable = '';
     col = minitermos.length +1;
     thead = '<thead> <tr><th style="padding: 20px;font-size:15px;" scope="col" align:"center" colspan="'+col+'">TABELA IMPLICANTS</th></tr></thead>';
@@ -797,8 +797,8 @@ function tabela_implicants(){
           termo = combinacoes[i][j-1];
           myTable += '<th scope="col">'+bin_literal(combinacoes[i][j],n)+'</th>';
         
-          array_posicoes = [];
-          for(var l = 0; l < termo.length; l++){
+          array_posicoes = []; 
+          for(var l = 0; l < termo.length; l++){ // pega posicao em que deve colocar ✔
             for (var k = 0; k < minitermos.length; k++){
               if(minitermos[k] == termo[l]){
                 array_posicoes[k] ='<td> ✔ </td>';
@@ -821,11 +821,10 @@ function tabela_implicants(){
     document.getElementById('tabela_implicants').style.display = 'block';
     document.getElementById('tabela_implicants').style.textAlign = 'center';
    
-  //} 
 }
 
 //////////////////////////////////////////////
-/////       CRIAR EXPRESSAO ALGEBRICA     ////
+/////        CRIAR EXPRESSAO FUNCAO       ////
 
 function criar_expressao(){
 
@@ -874,33 +873,6 @@ function criar_expressao(){
   }
 }
 //////////////////////////////////////////////
-
-////////   ADD -> ARRAY COMBINACOES    //////
-
-
-function add_to_combinacoes(){
-  juncao = minitermos.concat(dont_cares).map(Number);
-  juncao.sort(comparaNumeros);
-
-  combinacoes = [];
-  num_tabelas = 0;
-
-  for (var i = 0; i <= n; i++){
-      combinacoes[i] = [];
-  }
-  
-  for (i=0; i < juncao.length; i++){
-
-    num_bin = Number(juncao[i]).toString(2).padStart(n, 0);
-    grupo = (num_bin.split('1').length) -1;
-    caminho = [];
-    caminho.push(juncao[i]);
-    combinacoes[grupo].push(caminho,num_bin);
-
-  }
-}
-
-/////////////////////////////////////////////
 ////////   EXCLUIR TERMOS INFERIORES   //////
 
 function excluir_termos_inferiores(m){
@@ -956,6 +928,7 @@ function excluir_termos_inferiores(m){
 }
 
 /////////////////////////////////////////////
+//              REALIZA MERGES             //
 
 function simplificacao(){
   document.getElementById('tabela').innerHTML = "";  
