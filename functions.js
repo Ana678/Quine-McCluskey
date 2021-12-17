@@ -771,9 +771,11 @@ function tabela_implicants(){
   
   if ((minitermos.length != 0 && dont_cares.length != 0) || minitermos.length != 0){
     tabela = document.getElementById("tabela_implicants");
-   
+    min_ordenados = [];
+    min_ordenados = min_ordenados.concat(minitermos).map(Number).sort(comparaNumeros); 
+
     var myTable = '';
-    col = minitermos.length +1;
+    col = min_ordenados.length +1;
     thead = '<thead> <tr><th style="padding: 20px;font-size:15px;" scope="col" align:"center" colspan="'+col+'">TABELA IMPLICANTS</th></tr></thead>';
 
     num_bin = ((2**n)-1).toString(2).padStart(n, 0);
@@ -783,13 +785,13 @@ function tabela_implicants(){
 
     myTable += '<tr>';
     myTable += '<th scope="col"> PI </th>';
-    for (var i = 0; i < minitermos.length; i++){
-        myTable += '<th scope="col">'+minitermos[i]+'</th>';
+    for (var i = 0; i < min_ordenados.length; i++){
+        myTable += '<th scope="col">'+min_ordenados[i]+'</th>';
         
       }
     }
     myTable += '</tr>';
-    
+
     for (var i = 0; i < combinacoes.length; i++){
       for (var j = 0; j < combinacoes[i].length; j++){
         myTable += '<tr>';
@@ -799,8 +801,8 @@ function tabela_implicants(){
         
           array_posicoes = []; 
           for(var l = 0; l < termo.length; l++){ // pega posicao em que deve colocar ✔
-            for (var k = 0; k < minitermos.length; k++){
-              if(minitermos[k] == termo[l]){
+            for (var k = 0; k < min_ordenados.length; k++){
+              if(min_ordenados[k] == termo[l]){
                 array_posicoes[k] ='<td> ✔ </td>';
               }else if(array_posicoes[k] != "<td> ✔ </td>"){
                   array_posicoes[k] = '<td>  </td>';
