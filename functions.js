@@ -776,7 +776,7 @@ function tabela_implicants(){
 
     var myTable = '';
     col = min_ordenados.length +1;
-    thead = '<thead> <tr><th style="padding: 20px;font-size:15px;" scope="col" align:"center" colspan="'+col+'">TABELA IMPLICANTS</th></tr></thead>';
+    thead = '<thead> <tr><th style="padding: 20px;font-size:15px;" scope="col" align:"center" colspan="'+col+'">TABELA IMPLICANTES</th></tr></thead>';
 
     num_bin = ((2**n)-1).toString(2).padStart(n, 0);
     literal = bin_literal(num_bin,n);
