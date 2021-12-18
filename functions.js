@@ -124,12 +124,12 @@ function add_minitermo(){
   if ((window.event ? event.keyCode : event.which) == 13) {
     erro = document.getElementById('error');
     min = document.getElementById('minitermo').value;
-    if (min != '0'){
+    if (min != '0' && (isNaN(min) == false)){
       min = min.replace(/^0+/, '');
     }
     
 
-    if ((n > 0) && (min != "") && (minitermos.includes(min) == false) && (dont_cares.includes(min) == false) && (min < 2**n)){
+    if ((isNaN(min) == false) && (n > 0) && (min != "") && (minitermos.includes(min) == false) && (dont_cares.includes(min) == false) && (min < 2**n)){
 
       minitermos.push(min);
       
@@ -184,11 +184,11 @@ function add_dont_care(){
     erro = document.getElementById('error');
     dont = document.getElementById('dontcare').value;
     
-    if (dont != '0'){
+    if (dont != '0' && (isNaN(dont) == false)){
       dont = dont.replace(/^0+/, '');
     }
 
-    if ((n > 0) && (dont != "") && (dont_cares.includes(dont) == false) && (minitermos.includes(dont) == false) && (dont < 2**n)){
+    if ((isNaN(dont) == false) && (n > 0) && (dont != "") && (dont_cares.includes(dont) == false) && (minitermos.includes(dont) == false) && (dont < 2**n)){
 
       dont_cares.push(dont);
 
