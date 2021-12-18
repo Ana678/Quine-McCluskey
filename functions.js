@@ -705,7 +705,7 @@ function construir_tabela(){
     tabela = document.getElementById("tabela");
     //tabela.innerHTML = '';
     var myTable = '';
-    thead = '<thead> <tr> <th style="padding: 20px;font-size:15px" scope="col" align:"center" colspan="4">STEP '+num_tabelas+'</th></tr></thead>';
+    thead = '<thead> <tr> <th style="padding: 20px;font-size:15px" scope="col" align:"center" colspan="4">PASSO '+num_tabelas+'</th></tr></thead>';
     num_tabelas++;
 
     if (step == false || (step == true && num_tabelas == 1)){
@@ -792,6 +792,26 @@ function tabela_implicants(){
     }
     myTable += '</tr>';
 
+    /// pega mintiermos unicos para marcar eles diferentes
+    minitermos_unicos = [];
+
+    for (var i = 0; i < combinacoes.length; i++){ 
+      for (var j = 0; j < combinacoes[i].length; j+= 2){
+        
+        termo = combinacoes[i][j];
+        for(var l = 0; l < termo.length; l++){  
+          if(minitermos_unicos.indexOf(termo[l]) < 0){
+            minitermos_unicos.push(termo[l]);
+          }else{
+            minitermos_unicos.splice(minitermos_unicos.indexOf(termo[l]),1);
+            
+          }
+
+        }
+      }
+    }
+    //////////////////////////////////////////////////////
+
     for (var i = 0; i < combinacoes.length; i++){
       for (var j = 0; j < combinacoes[i].length; j++){
         myTable += '<tr>';
@@ -803,8 +823,13 @@ function tabela_implicants(){
           for(var l = 0; l < termo.length; l++){ // pega posicao em que deve colocar ✔
             for (var k = 0; k < min_ordenados.length; k++){
               if(min_ordenados[k] == termo[l]){
-                array_posicoes[k] ='<td> ✔ </td>';
-              }else if(array_posicoes[k] != "<td> ✔ </td>"){
+                if(minitermos_unicos.indexOf(termo[l]) >= 0){
+                  array_posicoes[k] ='<td style="background-color: #EFEFEF"> ✔ </td>';
+                }else{
+                  array_posicoes[k] ='<td> ✔ </td>';
+                }
+
+              }else if(array_posicoes[k] != '<td> ✔ </td>' && array_posicoes[k] != '<td style="background-color: #EFEFEF"> ✔ </td>'){
                   array_posicoes[k] = '<td>  </td>';
               }
             }
